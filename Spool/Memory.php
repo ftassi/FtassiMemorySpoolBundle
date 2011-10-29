@@ -24,6 +24,11 @@ class Memory implements \Swift_Spool
         fclose($this->stream);
     }
 
+    public function __destruct()
+    {
+        fclose($this->stream);
+    }
+
     public function queueMessage(\Swift_Mime_Message $message)
     {
         $this->messages[] = $message;
