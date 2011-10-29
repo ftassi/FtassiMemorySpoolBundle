@@ -18,7 +18,6 @@ class Memory implements \Swift_Spool
         $this->stream = fopen('php://memory', 'r+', false);
     }
 
-
     public function queueMessage(\Swift_Mime_Message $message)
     {
         $this->messages[] = $message;
@@ -41,7 +40,7 @@ class Memory implements \Swift_Spool
         $this->messages = unserialize($serMessages);
         return $this->messages;
     }
-    
+
     public function clearQueue()
     {
         fclose($this->stream);
@@ -50,8 +49,9 @@ class Memory implements \Swift_Spool
 
     public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)
     {
+        
     }
-    
+
     public function start()
     {
         return false;
