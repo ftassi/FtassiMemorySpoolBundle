@@ -11,11 +11,17 @@ class Memory implements \Swift_Spool
 {
 
     protected $stream;
+    
     protected $messages = array();
 
     function __construct()
     {
         $this->stream = fopen('php://memory', 'r+', false);
+    }
+    
+    public function __destruct()
+    {
+        fclose($this->stream);
     }
 
     public function queueMessage(\Swift_Mime_Message $message)
