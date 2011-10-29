@@ -10,52 +10,52 @@ namespace Ftassi\Bundle\MemorySpoolBundle\Spool;
 class Memory implements \Swift_Spool
 {
 
-    protected $stream;
-    
-    protected $messages = array();
+    /**
+     *
+     * @var array
+     */
+    protected $messageQueue;
 
-    function __construct()
+    /**
+     *
+     * @var Memory
+     */
+    protected static $spoolInstance = null;
+    
+    public static function factory()
     {
-        $this->stream = fopen('php://memory', 'r+', false);
+        if (!self::$spoolInstance)
+        {
+            self::$spoolInstance = new Memory();
+        }
+        
+        return self::$spoolInstance;
     }
     
-    public function __destruct()
+    public function __construct()
     {
-        fclose($this->stream);
+        $this->clearQueue();
     }
-
-    public function __destruct()
-    {
-        fclose($this->stream);
-    }
+    
 
     public function queueMessage(\Swift_Mime_Message $message)
     {
-        $this->messages[] = $message;
-
-        if ($this->stream) {
-            fputs($this->stream, serialize($this->messages));
-            rewind($this->stream);
-        }
+        $this->messageQueue[] = $message->toString();
     }
 
     public function getMessage($messageId)
     {
-        $queue = $this->getQueue();
-        return $queue[0];
+        return @$this->messageQueue[$messageId];
     }
 
     public function getQueue()
     {
-        $serMessages = fgets($this->stream);
-        $this->messages = unserialize($serMessages);
-        return $this->messages;
+        return $this->messageQueue;
     }
 
     public function clearQueue()
-    {
-        fclose($this->stream);
-        $this->stream = fopen('php://memory', 'r+', false);
+    { 
+        $this->messageQueue = array();
     }
 
     public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)

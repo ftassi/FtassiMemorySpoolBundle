@@ -21,7 +21,10 @@
         <parameter key="ftassi_memory_spool.class">Ftassi\Bundle\MemorySpoolBundle\Spool\Memory</parameter>
     </parameters>
     <services>
-        <service id="swiftmailer.spool.memory" class="%ftassi_memory_spool_class%" />
+        <service 
+            id="swiftmailer.spool.memory" 
+            class="%ftassi_memory_spool.class%" 
+            factory-method="factory" 
+            factory-class="%ftassi_memory_spool.class%" />
     </services>
-        
 </container>

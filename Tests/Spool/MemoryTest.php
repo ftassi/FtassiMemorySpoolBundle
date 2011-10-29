@@ -20,7 +20,9 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
     
     public function setUp()
     {
-        $this->spool = new Memory();
+        $this->spool = Memory::factory();
+        $this->spool->clearQueue();
+        
         $mailer = new \Swift_Mailer(new \Swift_NullTransport());
         $this->queueMessage = $mailer->createMessage();
         
@@ -34,24 +36,30 @@ class MemoryTest extends \PHPUnit_Framework_TestCase
         $this->spool->queueMessage($this->queueMessage);
         $message = $this->spool->getMessage(0);
         
-        $this->assertEquals($this->queueMessage, $message);
+        $this->assertInternalType('string', $message);
+        $this->assertEquals($this->queueMessage->toString(), $message);
     }
     
     public function testGetQueue()
     {
         $this->spool->queueMessage($this->queueMessage);
         $queue = $this->spool->getQueue();
-        
-        $this->assertEquals(array($this->queueMessage), $queue);
+        $this->assertEquals(array($this->queueMessage->toString()), $queue);
     }
     
-    public function testFlushQueue()
+    public function testClearQueue()
     {
         $this->spool->queueMessage($this->queueMessage);
+        $messageQueue = $this->spool->getQueue();   
+        $this->assertEquals(1, count($messageQueue));
+         
         $this->spool->clearQueue();
-        
-        $this->assertEmpty($this->spool->getQueue());
+        $messageQueue = $this->spool->getQueue();   
+        $this->assertEquals(0, count($messageQueue));
     }
+    
+    
+    
     
 }
 
