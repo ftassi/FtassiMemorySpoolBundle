@@ -40,7 +40,7 @@ class Memory implements \Swift_Spool
 
     public function queueMessage(\Swift_Mime_Message $message)
     {
-        $this->messageQueue[] = $message->toString();
+        $this->messageQueue[] = $message;
     }
 
     public function getMessage($messageId)
